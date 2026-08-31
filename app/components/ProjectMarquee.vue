@@ -114,7 +114,7 @@ onMounted(() => {
   >
     <div
       data-nav="dark"
-      class="sticky top-0 h-svh w-full overflow-hidden [transform:translateZ(0)] [backface-visibility:hidden]"
+      class="sticky top-0 h-svh w-full overflow-hidden"
     >
       <div class="relative z-10 h-full w-full">
         <NuxtLink
