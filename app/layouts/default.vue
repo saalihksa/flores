@@ -9,7 +9,7 @@
     <ContactSticky />
     <SiteMenu />
     <ContactOverlay />
-    <div class="relative z-10 overflow-x-clip">
+    <div class="relative z-10">
       <slot />
     </div>
     <SiteFooter />

@@ -5,13 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const { hovering } = useUi()
 const root = ref<HTMLElement | null>(null)
+const stage = ref<HTMLElement | null>(null)
+const wrapEls = ref<HTMLElement[]>([])
 const cardEls = ref<HTMLElement[]>([])
 const printEls = ref<HTMLElement[]>([])
 const compact = ref(false)
 
 const items = computed(() => projects)
 const count = computed(() => items.value.length)
-const trackHeight = computed(() => `${Math.max(count.value, 1) * 100}svh`)
 
 function coverOf(project: (typeof projects)[number]) {
   if (project.slug === 'flores-nova') return '/images/hero/nova.png'
@@ -20,47 +21,88 @@ function coverOf(project: (typeof projects)[number]) {
   return project.cover
 }
 
+function asHtml(el: unknown): HTMLElement | null {
+  if (el instanceof HTMLElement) return el
+  const nested = el as { $el?: HTMLElement } | null
+  if (nested?.$el instanceof HTMLElement) return nested.$el
+  return null
+}
+
+function bindWrap(el: unknown, index: number) {
+  const html = asHtml(el)
+  if (html) wrapEls.value[index] = html
+}
+
 function bindCard(el: unknown, index: number) {
-  const node = (el as { $el?: HTMLElement } | HTMLElement | null)
-  const html = node && '$el' in (node as object) ? (node as { $el: HTMLElement }).$el : node
-  if (html instanceof HTMLElement) cardEls.value[index] = html
+  const html = asHtml(el)
+  if (html) cardEls.value[index] = html
 }
 
 function bindPrint(el: unknown, index: number) {
   if (el instanceof HTMLElement) printEls.value[index] = el
 }
 
+function lockMobileStage() {
+  if (!compact.value || !root.value || !stage.value) return
+  const vh = window.innerHeight
+  const vw = window.innerWidth
+  root.value.style.height = `${count.value * vh}px`
+  stage.value.style.height = `${vh}px`
+  const w = Math.min(Math.round(vw * 0.88), 400)
+  const h = Math.round((w * 5) / 4)
+  for (const print of printEls.value) {
+    if (!print) continue
+    print.style.width = `${w}px`
+    print.style.height = `${h}px`
+  }
+  for (const card of cardEls.value) {
+    if (!card) continue
+    card.style.width = `${w}px`
+  }
+}
+
 function applyPos(pos: number) {
   const n = count.value
   const mobile = compact.value
-  const step = mobile ? 94 : 38
+  const stepPx = Math.round(window.innerWidth * (mobile ? 0.94 : 0.38))
   for (let i = 0; i < n; i++) {
-    const el = cardEls.value[i]
-    if (!el) continue
+    const wrap = wrapEls.value[i]
+    const card = cardEls.value[i]
+    if (!wrap || !card) continue
     let d = i - pos
     while (d > n / 2) d -= n
     while (d < -n / 2) d += n
     const ad = Math.abs(d)
     if (ad > 1.7) {
-      el.style.visibility = 'hidden'
-      el.style.pointerEvents = 'none'
+      wrap.style.visibility = 'hidden'
+      wrap.style.pointerEvents = 'none'
       continue
     }
-    const fade = ad > 1.2 ? 1 - (ad - 1.2) / 0.5 : 1
-    el.style.visibility = 'visible'
-    el.style.pointerEvents = ad < 1.2 ? 'auto' : 'none'
-    el.style.zIndex = String(Math.round((1 - ad) * 30))
-    el.style.opacity = String(Math.max(0, fade))
-    el.style.transform = `translate3d(${d * step}vw, 0px, 0)`
-    el.style.filter = mobile ? 'none' : `blur(${ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)}px)`
+    wrap.style.visibility = 'visible'
+    wrap.style.pointerEvents = ad < 1.2 ? 'auto' : 'none'
+    wrap.style.zIndex = String(Math.round((1 - ad) * 30))
 
-    const print = printEls.value[i]
-    if (!print) continue
     if (mobile) {
-      print.style.transform = 'none'
-      print.style.boxShadow = 'none'
+      wrap.style.opacity = '1'
+      wrap.style.filter = 'none'
+      wrap.style.transform = 'none'
+      const x = Math.round(d * stepPx)
+      card.style.transform = `translate3d(${x}px,0,0)`
+      const print = printEls.value[i]
+      if (print) {
+        print.style.transform = 'none'
+        print.style.boxShadow = 'none'
+      }
+      continue
     }
-    else {
+
+    const fade = ad > 1.2 ? 1 - (ad - 1.2) / 0.5 : 1
+    wrap.style.opacity = String(Math.max(0, fade))
+    wrap.style.transform = `translate3d(${d * 38}vw, 0, 0)`
+    wrap.style.filter = `blur(${ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)}px)`
+    card.style.transform = 'none'
+    const print = printEls.value[i]
+    if (print) {
       print.style.transform = `translate3d(0,0,0) scale(${Math.max(1.05 - ad * 0.16, 0.84)})`
       print.style.boxShadow = ad < 0.28 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.2)' : 'none'
     }
@@ -71,12 +113,18 @@ onMounted(() => {
   const mq = window.matchMedia('(max-width: 640px)')
   const sync = () => {
     compact.value = mq.matches
+    lockMobileStage()
     applyPos(0)
   }
-  sync()
+  compact.value = mq.matches
   mq.addEventListener('change', sync)
-  if (!root.value) {
-    onUnmounted(() => mq.removeEventListener('change', sync))
+  window.addEventListener('orientationchange', lockMobileStage)
+
+  if (!root.value || !stage.value) {
+    onUnmounted(() => {
+      mq.removeEventListener('change', sync)
+      window.removeEventListener('orientationchange', lockMobileStage)
+    })
     return
   }
 
@@ -93,10 +141,17 @@ onMounted(() => {
     })
   }, root.value)
 
-  applyPos(0)
-  requestAnimationFrame(() => ScrollTrigger.refresh())
+  nextTick(() => {
+    sync()
+    requestAnimationFrame(() => {
+      lockMobileStage()
+      applyPos(0)
+      ScrollTrigger.refresh()
+    })
+  })
   onUnmounted(() => {
     mq.removeEventListener('change', sync)
+    window.removeEventListener('orientationchange', lockMobileStage)
     ctx.revert()
   })
 })
@@ -108,11 +163,12 @@ onMounted(() => {
     id="intro-section-container"
     class="relative w-full text-secondary"
     :style="{
-      height: trackHeight,
+      height: `${Math.max(count, 1) * 100}svh`,
       background: 'linear-gradient(180deg, #ececec 0%, #f4f4f4 45%, #fafafa 100%)',
     }"
   >
     <div
+      ref="stage"
       data-nav="dark"
       class="sticky top-0 h-svh w-full overflow-hidden"
     >
@@ -120,21 +176,25 @@ onMounted(() => {
         <NuxtLink
           v-for="(project, i) in items"
           :key="project.slug"
-          :ref="(el) => bindCard(el, i)"
+          :ref="(el) => bindWrap(el, i)"
           :to="project.tour ? `/projects/${project.slug}#sanal-tur` : `/projects/${project.slug}`"
           class="absolute inset-0 flex items-center justify-center"
           @mouseenter="hovering = true"
           @mouseleave="hovering = false"
         >
-          <article class="relative flex w-[88vw] max-w-[400px] flex-col items-center bg-transparent sm:w-[29vw] sm:max-w-none">
+          <article
+            :ref="(el) => bindCard(el, i)"
+            class="relative flex w-[88vw] max-w-[400px] flex-col items-center bg-transparent sm:w-[29vw] sm:max-w-none"
+          >
             <div
               :ref="(el) => bindPrint(el, i)"
-              class="relative w-full overflow-hidden rounded-[10px] sm:rounded-[0.9vw]"
+              class="relative w-full sm:overflow-hidden sm:rounded-[0.9vw]"
             >
               <img
                 :src="coverOf(project)"
                 :alt="project.title"
-                class="aspect-[4/5] w-full origin-center object-cover [backface-visibility:hidden]"
+                class="marquee-photo h-full w-full object-cover"
+                draggable="false"
               >
               <span
                 v-if="project.onSale"
@@ -200,6 +260,22 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.marquee-photo {
+  display: block;
+  border-radius: 10px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+@media (min-width: 641px) {
+  .marquee-photo {
+    border-radius: 0;
+    transform: none;
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+}
+
 .gallery-scroll-wheel {
   animation: gallery-scroll-wheel 1.7s ease-in-out infinite;
 }
