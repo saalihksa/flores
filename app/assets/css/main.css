@@ -78,7 +78,16 @@ body,
   background: #ffffff;
   color: #0a0a0a;
   font-family: "New Grotesk", system-ui, sans-serif;
-  overflow-x: clip;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+body,
+#__nuxt {
+  overflow: visible;
 }
 
 .font-sans,
