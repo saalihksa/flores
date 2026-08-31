@@ -66,7 +66,7 @@ onMounted(() => {
               Flores, modern yaşamın ihtiyaçlarını karşılamak için yenilikçi projeler geliştiren ve MİSEK İnşaat’ın gücünü arkasına alan bir markadır.
             </p>
             <p class="w-full rounded-2xl bg-secondary/40 px-5 py-4 text-[15px] leading-relaxed backdrop-blur-md sm:col-span-3 sm:col-start-auto sm:w-auto sm:rounded-[0.55vw] sm:px-[0.75vw] sm:py-[0.55vw] sm:text-[1.6vw] sm:leading-snug">
-              Konfor, güvenlik ve estetiği bir araya getirerek kentsel dönüşüm projeleriyle şehre değer katmayı hedefliyoruz.
+              Konfor, güvenlik ve estetiği bir araya getirerek konut, ticari ve yaşam alanı projeleriyle şehre değer katmayı hedefliyoruz.
             </p>
           </div>
         </div>

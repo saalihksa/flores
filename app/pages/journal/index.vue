@@ -4,7 +4,7 @@ import { journal } from '~/data/content'
 useSeoMeta({
   title: 'Haberler | FLORES',
   description:
-    'FLORES ve MİSEK İnşaat’tan İstanbul’daki yeni yaşam alanları, kentsel dönüşüm ve kurumsal gelişmeler.',
+    'FLORES ve MİSEK İnşaat’tan İstanbul’daki yeni yaşam alanları ve kurumsal gelişmeler.',
 })
 </script>
 
@@ -15,7 +15,7 @@ useSeoMeta({
         Haberler
       </h1>
       <p class="col-span-6 mt-[8vw] smallText sm:col-span-4 sm:col-start-9 sm:mt-[1.4vw]">
-        FLORES ve MİSEK İnşaat’tan İstanbul’daki yeni yaşam alanları, kentsel dönüşüm ve kurumsal gelişmeler.
+        FLORES ve MİSEK İnşaat’tan İstanbul’daki yeni yaşam alanları ve kurumsal gelişmeler.
       </p>
     </section>
 

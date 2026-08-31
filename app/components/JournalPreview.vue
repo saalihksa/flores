@@ -12,7 +12,7 @@ const posts = journal.slice(0, 3)
       </h2>
       <div class="col-span-6 mt-3 flex flex-col gap-3 sm:col-span-4 sm:col-start-9 sm:mt-0 sm:items-end sm:gap-[0.8vw]">
         <p class="extraSmallText leading-relaxed text-black/55 sm:text-right">
-          FLORES ve MİSEK İnşaat’tan projeler ve kentsel dönüşüm.
+          FLORES ve MİSEK İnşaat’tan projeler ve yeni yaşam alanları.
         </p>
         <PillButton to="/journal" tone="dark" size="sm" class="w-fit">
           Tüm haberler

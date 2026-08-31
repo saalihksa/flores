@@ -335,7 +335,7 @@ export const testimonials = [
   },
   {
     quote:
-      'MİSEK İnşaat güvencesiyle kentsel dönüşüm projeleri geliştirerek İstanbul’a nitelikli yaşam alanları kazandırıyoruz.',
+      'MİSEK İnşaat güvencesiyle İstanbul’a nitelikli konut ve yaşam alanları kazandırıyoruz.',
     name: 'FLORES Nova',
     studio: 'ZEYTİNBURNU',
     image: '/images/projects/nova.png',
@@ -358,19 +358,19 @@ export const services = [
   {
     n: '3',
     title: 'Şehre değer katan projeler',
-    copy: 'Şehrin dinamik yapısını ve tarihsel dokusunu gözeterek kentsel dönüşüm projeleriyle bölgelere değer katmayı hedefliyoruz.',
+    copy: 'Şehrin dinamik yapısını ve tarihsel dokusunu gözeterek konut, ticari ve sosyal yaşam projeleriyle bölgelere değer katmayı hedefliyoruz.',
     image: '/images/projects/nova.png',
   },
 ]
 
 export const studioAbout = {
   heroExcerpt:
-    'En iyi projelerin içinde hayaller, arkasında Flores var. Konfor, güvenlik ve estetiği bir araya getiren kentsel dönüşüm projeleri geliştiriyoruz.',
+    'En iyi projelerin içinde hayaller, arkasında Flores var. Konfor, güvenlik ve estetiği bir araya getiren konut ve yaşam alanı projeleri geliştiriyoruz.',
   intro: {
     title: 'Hakkımızda',
     lead:
       'Flores, modern yaşamın ihtiyaçlarını karşılamak için yenilikçi projeler geliştiren ve MİSEK İnşaat’ın gücünü arkasına alan bir marka olarak, konfor, güvenlik ve estetiği bir araya getiren projeleriyle öne çıkmaktadır.',
-    body: 'Şehrin dinamik yapısını ve tarihsel dokusunu göz önünde bulundurarak, kentsel dönüşüm projeleriyle bölgelere değer katmayı hedefliyoruz.',
+    body: 'Şehrin dinamik yapısını ve tarihsel dokusunu göz önünde bulundurarak, konut, ticari ve sosyal yaşam projeleriyle bölgelere değer katmayı hedefliyoruz.',
   },
   flagship: {
     title: 'Flores Gold ve Flores Deluxe',
@@ -559,7 +559,7 @@ export const areas = [
     title: 'Çevreye duyarlı tasarımlar',
     copy: [
       'Doğayla uyumlu, sürdürülebilir ve enerji verimliliği sağlayan yapılar.',
-      'Teknolojik yeniliklerle donatılmış, yarının şehirlerini düşünen kentsel dönüşüm.',
+      'Teknolojik yeniliklerle donatılmış, yarının şehirlerini düşünen tasarımlar.',
     ],
     image: '/images/projects/nova.png',
   },

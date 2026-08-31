@@ -19,14 +19,14 @@ export default defineNuxtConfig({
         {
           name: 'description',
           content:
-            'FLORES, modern yaşamın ihtiyaçlarını karşılayan yenilikçi projeleriyle konfor, güvenlik ve estetiği bir araya getiriyor. MİSEK İnşaat güvencesiyle kentsel dönüşüm projeleri geliştirerek şehre değer katıyoruz.',
+            'FLORES, modern yaşamın ihtiyaçlarını karşılayan yenilikçi projeleriyle konfor, güvenlik ve estetiği bir araya getiriyor. MİSEK İnşaat güvencesiyle konut, ticari ve yaşam alanı projeleri geliştirerek şehre değer katıyoruz.',
         },
         { property: 'og:site_name', content: 'FLORES' },
         { property: 'og:title', content: 'FLORES | Modern Yaşam, Güvenli Gelecek' },
         {
           property: 'og:description',
           content:
-            'FLORES, modern yaşamın ihtiyaçlarını karşılayan yenilikçi projeleriyle konfor, güvenlik ve estetiği bir araya getiriyor. MİSEK İnşaat güvencesiyle kentsel dönüşüm projeleri geliştirerek şehre değer katıyoruz.',
+            'FLORES, modern yaşamın ihtiyaçlarını karşılayan yenilikçi projeleriyle konfor, güvenlik ve estetiği bir araya getiriyor. MİSEK İnşaat güvencesiyle konut, ticari ve yaşam alanı projeleri geliştirerek şehre değer katıyoruz.',
         },
       ],
       link: [
