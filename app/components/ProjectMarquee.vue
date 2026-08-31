@@ -5,7 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const { hovering } = useUi()
 const root = ref<HTMLElement | null>(null)
-const scrollPos = ref(0)
+const cardEls = ref<HTMLElement[]>([])
+const printEls = ref<HTMLElement[]>([])
 const compact = ref(false)
 
 const items = computed(() => projects)
@@ -19,43 +20,50 @@ function coverOf(project: (typeof projects)[number]) {
   return project.cover
 }
 
-function projectHref(project: (typeof projects)[number]) {
-  return project.tour ? `/projects/${project.slug}#sanal-tur` : `/projects/${project.slug}`
+function bindCard(el: unknown, index: number) {
+  const node = (el as { $el?: HTMLElement } | HTMLElement | null)
+  const html = node && '$el' in (node as object) ? (node as { $el: HTMLElement }).$el : node
+  if (html instanceof HTMLElement) cardEls.value[index] = html
 }
 
-function wrappedDelta(index: number) {
+function bindPrint(el: unknown, index: number) {
+  if (el instanceof HTMLElement) printEls.value[index] = el
+}
+
+function applyPos(pos: number) {
   const n = count.value
-  let d = index - scrollPos.value
-  while (d > n / 2) d -= n
-  while (d < -n / 2) d += n
-  return d
-}
+  const mobile = compact.value
+  const step = mobile ? 94 : 38
+  for (let i = 0; i < n; i++) {
+    const el = cardEls.value[i]
+    if (!el) continue
+    let d = i - pos
+    while (d > n / 2) d -= n
+    while (d < -n / 2) d += n
+    const ad = Math.abs(d)
+    if (ad > 1.7) {
+      el.style.visibility = 'hidden'
+      el.style.pointerEvents = 'none'
+      continue
+    }
+    const fade = ad > 1.2 ? 1 - (ad - 1.2) / 0.5 : 1
+    el.style.visibility = 'visible'
+    el.style.pointerEvents = ad < 1.2 ? 'auto' : 'none'
+    el.style.zIndex = String(Math.round((1 - ad) * 30))
+    el.style.opacity = String(Math.max(0, fade))
+    el.style.transform = `translate3d(${d * step}vw, 0px, 0)`
+    el.style.filter = mobile ? 'none' : `blur(${ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)}px)`
 
-function cardStyle(index: number) {
-  const d = wrappedDelta(index)
-  const ad = Math.abs(d)
-  if (ad > 1.7) {
-    return { visibility: 'hidden' as const, pointerEvents: 'none' as const }
-  }
-  const x = d * 38
-  const fade = ad > 1.2 ? 1 - (ad - 1.2) / 0.5 : 1
-  const blur = ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)
-  return {
-    transform: `translate3d(${x}vw, 0, 0)`,
-    zIndex: String(Math.round((1 - ad) * 30)),
-    opacity: String(Math.max(0, fade)),
-    pointerEvents: ad < 1.2 ? 'auto' : 'none',
-    filter: `blur(${blur}px)`,
-  }
-}
-
-function printStyle(index: number) {
-  const d = wrappedDelta(index)
-  const ad = Math.abs(d)
-  const scale = 1.05 - ad * 0.16
-  return {
-    transform: `translate3d(0, 0, 0) scale(${Math.max(scale, 0.84)})`,
-    boxShadow: ad < 0.28 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.2)' : 'none',
+    const print = printEls.value[i]
+    if (!print) continue
+    if (mobile) {
+      print.style.transform = 'none'
+      print.style.boxShadow = 'none'
+    }
+    else {
+      print.style.transform = `translate3d(0,0,0) scale(${Math.max(1.05 - ad * 0.16, 0.84)})`
+      print.style.boxShadow = ad < 0.28 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.2)' : 'none'
+    }
   }
 }
 
@@ -63,11 +71,11 @@ onMounted(() => {
   const mq = window.matchMedia('(max-width: 640px)')
   const sync = () => {
     compact.value = mq.matches
+    applyPos(0)
   }
   sync()
   mq.addEventListener('change', sync)
-
-  if (compact.value || !root.value) {
+  if (!root.value) {
     onUnmounted(() => mq.removeEventListener('change', sync))
     return
   }
@@ -77,14 +85,15 @@ onMounted(() => {
       trigger: root.value,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.45,
-      invalidateOnRefresh: true,
+      scrub: compact.value ? true : 0.45,
+      invalidateOnRefresh: !compact.value,
       onUpdate: (self) => {
-        scrollPos.value = self.progress * count.value
+        applyPos(self.progress * count.value)
       },
     })
   }, root.value)
 
+  applyPos(0)
   requestAnimationFrame(() => ScrollTrigger.refresh())
   onUnmounted(() => {
     mq.removeEventListener('change', sync)
@@ -97,121 +106,67 @@ onMounted(() => {
   <section
     ref="root"
     id="intro-section-container"
-    class="relative h-[100svh] w-full text-secondary sm:[height:var(--marquee-h)]"
+    class="relative w-full text-secondary"
     :style="{
-      '--marquee-h': trackHeight,
+      height: trackHeight,
       background: 'linear-gradient(180deg, #ececec 0%, #f4f4f4 45%, #fafafa 100%)',
     }"
   >
-    <!-- Mobil: native yatay snap — sticky/GSAP yok, titreme olmaz -->
     <div
       data-nav="dark"
-      class="relative flex h-full w-full flex-col sm:hidden"
+      class="sticky top-0 h-svh w-full overflow-hidden [transform:translateZ(0)] [backface-visibility:hidden]"
     >
-      <div
-        class="flex h-full w-full snap-x snap-mandatory items-center gap-[4vw] overflow-x-auto overflow-y-hidden px-[6vw] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; touch-action: pan-x;"
-      >
+      <div class="relative z-10 h-full w-full">
         <NuxtLink
-          v-for="project in items"
-          :key="`m-${project.slug}`"
-          :to="projectHref(project)"
-          class="w-[88vw] max-w-[400px] shrink-0 snap-center"
+          v-for="(project, i) in items"
+          :key="project.slug"
+          :ref="(el) => bindCard(el, i)"
+          :to="project.tour ? `/projects/${project.slug}#sanal-tur` : `/projects/${project.slug}`"
+          class="absolute inset-0 flex items-center justify-center"
           @mouseenter="hovering = true"
           @mouseleave="hovering = false"
         >
-          <article class="relative flex flex-col items-center bg-transparent">
-            <div class="relative w-full overflow-hidden rounded-[10px]">
+          <article class="relative flex w-[88vw] max-w-[400px] flex-col items-center bg-transparent sm:w-[29vw] sm:max-w-none">
+            <div
+              :ref="(el) => bindPrint(el, i)"
+              class="relative w-full overflow-hidden rounded-[10px] sm:rounded-[0.9vw]"
+            >
               <img
                 :src="coverOf(project)"
                 :alt="project.title"
-                class="aspect-[4/5] w-full object-cover"
-                draggable="false"
+                class="aspect-[4/5] w-full origin-center object-cover [backface-visibility:hidden]"
               >
               <span
                 v-if="project.onSale"
-                class="pointer-events-none absolute top-2.5 left-2.5 z-10 rounded-full bg-[#004860] px-2.5 py-1.5 extraSmallText font-medium leading-none text-white shadow-[0_6px_18px_rgb(0_30_45_/_0.45)] ring-2 ring-white"
+                class="pointer-events-none absolute top-2.5 left-2.5 z-10 rounded-full bg-[#004860] px-2.5 py-1.5 extraSmallText font-medium leading-none text-white shadow-[0_6px_18px_rgb(0_30_45_/_0.45)] ring-2 ring-white sm:top-[0.9vw] sm:left-[0.9vw] sm:px-[1.05vw] sm:py-[0.55vw] sm:text-[1.05vw]"
               >
                 {{ saleBadgeLabel }}
               </span>
               <span
                 v-if="project.tour"
-                class="pointer-events-none absolute bottom-3 left-1/2 z-10 inline-flex w-max -translate-x-1/2 items-center gap-1.5 rounded-full bg-cyan px-2.5 py-1.5 extraSmallText text-primary"
+                class="pointer-events-none absolute bottom-3 left-1/2 z-10 inline-flex w-max -translate-x-1/2 items-center gap-1.5 rounded-full bg-cyan px-2.5 py-1.5 extraSmallText text-primary sm:bottom-[1.1vw] sm:gap-[0.65vw] sm:px-[0.85vw] sm:py-[0.45vw]"
               >
                 Sanal tur yap
                 <ChipArrow />
               </span>
             </div>
-            <h3 class="mt-5 text-center text-[1.75rem] font-medium leading-tight tracking-[-0.03em] text-secondary">
+            <h3 class="mt-5 text-center text-[1.75rem] font-medium leading-tight tracking-[-0.03em] text-secondary sm:mt-[2.2vw] sm:text-[2.2vw]">
               Flores {{ project.title.replace(/^FLORES\s+/i, '') }}
             </h3>
-            <span class="mt-3 block h-[2px] w-12 bg-gold" />
+            <span class="mt-3 block h-[2px] w-12 bg-gold sm:mt-[0.7vw] sm:h-px sm:w-[2.4vw]" />
           </article>
         </NuxtLink>
       </div>
 
-      <div class="pointer-events-none absolute bottom-[max(1.6rem,env(safe-area-inset-bottom))] left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-secondary/50">
-        <div class="flex flex-col items-center" aria-hidden="true">
-          <svg class="gallery-swipe-chevrons h-11 w-11" viewBox="0 0 24 24" fill="none">
-            <path class="gallery-chevron gallery-chevron-1" d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-            <path class="gallery-chevron gallery-chevron-2" d="M5 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+      <div class="pointer-events-none absolute bottom-[max(1.6rem,env(safe-area-inset-bottom))] left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-secondary/50 sm:left-auto sm:right-[2.2vw] sm:bottom-[2.4vw] sm:translate-x-0 sm:gap-[0.55vw]">
+        <div class="flex flex-col items-center sm:hidden" aria-hidden="true">
+          <svg class="h-11 w-11" viewBox="0 0 24 24" fill="none">
+            <path class="gallery-chevron gallery-chevron-1" d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            <path class="gallery-chevron gallery-chevron-2" d="M6 19l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="mt-0.5 text-[14px] tracking-wide">Kaydır</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Masaüstü: dikey kaydırmayla yatay kartlar -->
-    <div
-      data-nav="dark"
-      class="sticky top-0 hidden h-svh w-full overflow-hidden sm:block"
-    >
-      <div class="relative z-10 flex h-full w-full items-center justify-center">
-        <div class="absolute inset-0">
-          <NuxtLink
-            v-for="(project, i) in items"
-            :key="project.slug"
-            :to="projectHref(project)"
-            class="absolute inset-0 flex items-center justify-center will-change-transform will-change-filter"
-            :style="cardStyle(i)"
-            @mouseenter="hovering = true"
-            @mouseleave="hovering = false"
-          >
-            <article class="relative flex w-[29vw] flex-col items-center bg-transparent">
-              <div
-                class="relative w-full overflow-hidden rounded-[0.9vw]"
-                :style="printStyle(i)"
-              >
-                <img
-                  :src="coverOf(project)"
-                  :alt="project.title"
-                  class="aspect-[4/5] w-full origin-center object-cover [backface-visibility:hidden]"
-                >
-                <span
-                  v-if="project.onSale"
-                  class="pointer-events-none absolute top-[0.9vw] left-[0.9vw] z-10 rounded-full bg-[#004860] px-[1.05vw] py-[0.55vw] extraSmallText font-medium leading-none text-white shadow-[0_6px_18px_rgb(0_30_45_/_0.45)] ring-2 ring-white sm:text-[1.05vw]"
-                >
-                  {{ saleBadgeLabel }}
-                </span>
-                <span
-                  v-if="project.tour"
-                  class="pointer-events-none absolute bottom-[1.1vw] left-1/2 z-10 inline-flex w-max -translate-x-1/2 items-center gap-[0.65vw] rounded-full bg-cyan px-[0.85vw] py-[0.45vw] extraSmallText text-primary"
-                >
-                  Sanal tur yap
-                  <ChipArrow />
-                </span>
-              </div>
-              <h3 class="mt-[2.2vw] text-center text-[2.2vw] font-medium leading-tight tracking-[-0.03em] text-secondary">
-                Flores {{ project.title.replace(/^FLORES\s+/i, '') }}
-              </h3>
-              <span class="mt-[0.7vw] block h-px w-[2.4vw] bg-gold" />
-            </article>
-          </NuxtLink>
-        </div>
-      </div>
-
-      <div class="pointer-events-none absolute right-[2.2vw] bottom-[2.4vw] z-20 flex flex-col items-center gap-[0.55vw] text-secondary/50">
-        <div class="flex flex-col items-center">
+        <div class="hidden flex-col items-center sm:flex">
           <svg
             class="h-[2.6vw] w-[1.45vw]"
             viewBox="0 0 20 36"
@@ -262,20 +217,20 @@ onMounted(() => {
 }
 
 .gallery-chevron {
-  animation: gallery-swipe-x 1.5s ease-in-out infinite;
+  animation: gallery-swipe 1.5s ease-in-out infinite;
 }
 .gallery-chevron-2 {
   animation-delay: 0.18s;
 }
 
-@keyframes gallery-swipe-x {
+@keyframes gallery-swipe {
   0%,
   100% {
-    transform: translateX(4px);
+    transform: translateY(4px);
     opacity: 0.2;
   }
   40% {
-    transform: translateX(-3px);
+    transform: translateY(-3px);
     opacity: 1;
   }
 }
