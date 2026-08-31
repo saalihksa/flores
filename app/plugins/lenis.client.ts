@@ -3,6 +3,14 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const isMobile = window.matchMedia('(max-width: 640px)').matches
+
+  if (isMobile) {
+    return {
+      provide: { lenis: null },
+    }
+  }
+
   const lenis = new Lenis({
     duration: 1.15,
     smoothWheel: true,

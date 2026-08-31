@@ -10,7 +10,7 @@ const compact = ref(false)
 
 const items = computed(() => projects)
 const count = computed(() => items.value.length)
-const trackHeight = computed(() => `${Math.max(count.value, 1) * 100}vh`)
+const trackHeight = computed(() => `${Math.max(count.value, 1) * 100}svh`)
 
 function coverOf(project: (typeof projects)[number]) {
   if (project.slug === 'flores-nova') return '/images/hero/nova.png'
@@ -35,14 +35,17 @@ function cardStyle(index: number) {
   }
   const x = d * (compact.value ? 94 : 38)
   const fade = ad > 1.2 ? 1 - (ad - 1.2) / 0.5 : 1
-  const blur = ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)
-  return {
+  const style: Record<string, string> = {
     transform: `translate3d(${x}vw, 0, 0)`,
     zIndex: String(Math.round((1 - ad) * 30)),
     opacity: String(Math.max(0, fade)),
-    filter: `blur(${blur}px)`,
-    pointerEvents: (ad < 1.2 ? 'auto' : 'none') as 'auto' | 'none',
+    pointerEvents: ad < 1.2 ? 'auto' : 'none',
   }
+  if (!compact.value) {
+    const blur = ad < 0.12 ? 0 : Math.min(ad * 3.2, 4.5)
+    style.filter = `blur(${blur}px)`
+  }
+  return style
 }
 
 function printStyle(index: number) {
@@ -50,8 +53,8 @@ function printStyle(index: number) {
   const ad = Math.abs(d)
   const scale = compact.value ? 1 : 1.05 - ad * 0.16
   return {
-    transform: `rotate(0deg) scale(${Math.max(scale, 0.84)})`,
-    boxShadow: ad < 0.28 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.2)' : 'none',
+    transform: `translate3d(0, 0, 0) scale(${Math.max(scale, 0.84)})`,
+    boxShadow: !compact.value && ad < 0.28 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.2)' : 'none',
   }
 }
 
@@ -71,7 +74,7 @@ onMounted(() => {
       trigger: root.value,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.45,
+      scrub: compact.value ? true : 0.45,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         scrollPos.value = self.progress * count.value
@@ -108,7 +111,7 @@ onMounted(() => {
             v-for="(project, i) in items"
             :key="project.slug"
             :to="project.tour ? `/projects/${project.slug}#sanal-tur` : `/projects/${project.slug}`"
-            class="absolute left-1/2 top-[48%] w-[88vw] max-w-[400px] -translate-x-1/2 -translate-y-1/2 will-change-transform will-change-filter sm:top-[54%] sm:w-[29vw] sm:max-w-none"
+            class="absolute left-1/2 top-[48%] w-[88vw] max-w-[400px] -translate-x-1/2 -translate-y-1/2 will-change-transform sm:top-[54%] sm:w-[29vw] sm:max-w-none sm:will-change-filter"
             :style="cardStyle(i)"
             @mouseenter="hovering = true"
             @mouseleave="hovering = false"
@@ -121,7 +124,7 @@ onMounted(() => {
                 <img
                   :src="coverOf(project)"
                   :alt="project.title"
-                  class="aspect-[4/5] w-full origin-center object-cover shadow-none ring-0 outline-none"
+                  class="aspect-[4/5] w-full origin-center object-cover shadow-none ring-0 outline-none [backface-visibility:hidden]"
                 >
                 <span
                   v-if="project.onSale"
