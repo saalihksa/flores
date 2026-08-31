@@ -100,7 +100,7 @@ function apply(pos: number) {
 
     const print = printEls.value[i]
     if (!print) continue
-    const blur = ad < 0.1 ? 0 : Math.min(ad * 7, 14)
+    const blur = ad < 0.1 ? 0 : Math.min(ad * 5.5, 11)
     print.style.filter = `blur(${blur}px)`
     print.style.transform = `scale(${Math.max(1.04 - ad * 0.12, 0.88)})`
     print.style.boxShadow = ad < 0.22 ? '0 1.4vw 3.2vw rgb(10 10 10 / 0.18)' : 'none'
