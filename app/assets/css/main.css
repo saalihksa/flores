@@ -1,0 +1,254 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+@import "./leaflet.css";
+
+@font-face {
+  font-family: "New Grotesk";
+  src: url("/fonts/NewGrotesk-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "New Grotesk";
+  src: url("/fonts/NewGrotesk-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "New Grotesk Mono";
+  src: url("/fonts/NewGrotesk-RegularMono.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "New Grotesk Mono";
+  src: url("/fonts/NewGrotesk-MediumMono.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Biro";
+  src: url("/fonts/Biro.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "New Grotesk", system-ui, sans-serif;
+  --font-mono: "New Grotesk Mono", ui-monospace, monospace;
+  --font-biro: "Biro", cursive;
+  --color-primary: #ffffff;
+  --color-secondary: #0a0a0a;
+  --color-gold: #c9a24a;
+  --color-cyan: #00a8e0;
+  --color-form: #f6f1e6;
+  --color-form-secondary: #5c4a28;
+  --color-formSecondary: #5c4a28;
+}
+
+:root {
+  --margin: 1.3889vw;
+  --gutter: 1.3889vw;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --margin: 4vw;
+    --gutter: 4vw;
+  }
+}
+
+* {
+  line-height: 1;
+  overscroll-behavior: none;
+}
+
+html,
+body,
+#__nuxt {
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: "New Grotesk", system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+.font-sans,
+body {
+  letter-spacing: -0.03em;
+}
+
+.font-mono {
+  letter-spacing: -0.1em;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding-inline: var(--margin);
+}
+
+@media (max-width: 640px) {
+  .layout-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.font-biro {
+  font-family: "Biro", cursive;
+  letter-spacing: 0;
+}
+
+.font-mono {
+  font-family: "New Grotesk Mono", ui-monospace, monospace;
+  letter-spacing: -0.1em;
+}
+
+.extraSmallText {
+  font-size: 1.1vw;
+  line-height: 1;
+}
+.smallText {
+  font-size: 1.6vw;
+  line-height: 1.2;
+}
+.mediumText {
+  font-size: 2.2vw;
+  line-height: 1;
+}
+.largeText {
+  font-size: 7vw;
+  line-height: 1;
+}
+.extraLargeText {
+  font-size: 8vw;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .extraSmallText {
+    font-size: 3.5vw;
+    line-height: 1.25;
+  }
+  .smallText {
+    font-size: 4.1vw;
+    line-height: 1.35;
+  }
+  .mediumText {
+    font-size: 6.2vw;
+    line-height: 1.15;
+  }
+  .largeText {
+    font-size: 10vw;
+    line-height: 1.08;
+  }
+  .extraLargeText {
+    font-size: 11.2vw;
+    line-height: 1.08;
+  }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.4s ease;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+::selection {
+  background: #c9a24a;
+  color: #0a0a0a;
+}
+
+img {
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  html,
+  body,
+  html *,
+  body * {
+    cursor: none !important;
+  }
+}
+
+.cursor-dot {
+  width: 0.45vw;
+  height: 0.45vw;
+  background: #fff;
+  border-radius: 999px;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+.cursor-ring {
+  width: 2.1vw;
+  height: 2.1vw;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  mix-blend-mode: difference;
+  will-change: transform;
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+}
+
+.cursor-dot.is-hover {
+  width: 1.1vw;
+  height: 1.1vw;
+}
+
+.cursor-ring.is-hover {
+  width: 3.2vw;
+  height: 3.2vw;
+  opacity: 0.4;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.hero-progress {
+  height: 3px;
+  background: rgb(0 153 194 / 0.35);
+}
+
+.hero-progress > span {
+  display: block;
+  height: 100%;
+  background: #c9a24a;
+  transform-origin: left;
+}
+
+.underline-grow {
+  height: max(0.1vw, 1px);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.group:hover .underline-grow,
+.underline-grow.is-on {
+  transform: scaleX(1);
+  transform-origin: left;
+}
