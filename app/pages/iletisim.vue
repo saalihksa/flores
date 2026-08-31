@@ -27,7 +27,7 @@ const channels = [
     icon: 'email',
   },
   {
-    title: 'Üsküdar, İstanbul',
+    title: company.address,
     location: 'Genel merkez',
     to: company.maps,
     chip: 'Yol tarifi',
@@ -57,7 +57,7 @@ const channels = [
           Bize ulaşın
         </h2>
         <p class="col-span-6 mt-[6vw] smallText sm:col-span-4 sm:col-start-9 sm:mt-[0.6vw]">
-          Telefon, e-posta veya harita. Hangisi kolayınıza gelirse.
+          Satış ve proje bilgisi için destek hattımız, e-posta adresimiz veya Üsküdar’daki genel merkezimiz üzerinden bize ulaşabilirsiniz.
         </p>
       </div>
 
@@ -92,7 +92,7 @@ const channels = [
 
           <!-- Bilgi -->
           <div class="flex flex-col gap-[1.5vw] sm:gap-[0.4vw]">
-            <p class="smallText font-medium leading-none">{{ item.title }}</p>
+            <p class="smallText font-medium leading-snug">{{ item.title }}</p>
             <p class="extraSmallText text-black/40">{{ item.location }}</p>
           </div>
 
@@ -104,25 +104,6 @@ const channels = [
             </span>
           </div>
         </a>
-      </div>
-
-      <div class="layout-grid mt-[8vw] items-end sm:mt-[3.2vw]">
-        <p class="col-span-6 extraSmallText leading-snug text-black/50 sm:col-span-7">
-          {{ company.address }}
-        </p>
-        <div class="col-span-6 mt-6 flex flex-wrap gap-3 sm:col-span-5 sm:mt-0 sm:justify-end sm:gap-[0.8vw]">
-          <a
-            :href="company.maps"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-full bg-cyan px-3 py-2 extraSmallText text-primary sm:gap-[0.65vw] sm:px-[0.9vw] sm:py-[0.5vw]"
-            @mouseenter="hovering = true"
-            @mouseleave="hovering = false"
-          >
-            Google
-            <ChipArrow />
-          </a>
-        </div>
       </div>
     </section>
 

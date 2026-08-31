@@ -4,7 +4,7 @@ export const company = {
   phone: '444 0 917',
   phoneHref: 'tel:4440917',
   email: 'info@flores.com.tr',
-  address: 'Kısıklı Mah. Hanımseti Sok. Hektaş Plaza No:38/2 Üsküdar / İstanbul',
+  address: 'Kısıklı Mahallesi Hanımseti Sokak Ekşioğlu İş Merkezi, Kat: 2 Daire: 1, Üsküdar / İstanbul',
   maps: 'https://maps.app.goo.gl/5FzEoe5HFisNHJkv8',
   copyright: 'Copyright 2026 | Tüm hakları Misek İnşaat şirketine aittir.',
   legalNote:
