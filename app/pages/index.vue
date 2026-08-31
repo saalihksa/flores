@@ -60,12 +60,12 @@ onMounted(() => {
           <PillButton to="/studio">Kurumsalı keşfet</PillButton>
         </div>
 
-        <div class="pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:flex sm:h-[50svh] sm:min-h-[30vw] sm:items-center sm:pb-0">
-          <div class="layout-grid w-full gap-y-3.5 sm:gap-y-0">
-            <p class="col-span-5 col-start-2 rounded-2xl bg-secondary/35 px-4 py-3.5 text-[4.2vw] leading-relaxed backdrop-blur-md sm:col-span-3 sm:col-start-7 sm:rounded-[0.55vw] sm:px-[0.75vw] sm:py-[0.55vw] sm:text-[1.6vw] sm:leading-snug">
+        <div class="px-[var(--margin)] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:flex sm:h-[50svh] sm:min-h-[30vw] sm:items-center sm:px-0 sm:pb-0">
+          <div class="mx-auto flex w-full max-w-[92vw] flex-col gap-3 sm:layout-grid sm:mx-0 sm:max-w-none sm:w-full sm:gap-y-0">
+            <p class="w-full rounded-2xl bg-secondary/40 px-5 py-4 text-[15px] leading-relaxed backdrop-blur-md sm:col-span-3 sm:col-start-7 sm:w-auto sm:rounded-[0.55vw] sm:px-[0.75vw] sm:py-[0.55vw] sm:text-[1.6vw] sm:leading-snug">
               Flores, modern yaşamın ihtiyaçlarını karşılamak için yenilikçi projeler geliştiren ve MİSEK İnşaat’ın gücünü arkasına alan bir markadır.
             </p>
-            <p class="col-span-5 col-start-2 rounded-2xl bg-secondary/35 px-4 py-3.5 text-[4.2vw] leading-relaxed backdrop-blur-md sm:col-span-3 sm:col-start-auto sm:rounded-[0.55vw] sm:px-[0.75vw] sm:py-[0.55vw] sm:text-[1.6vw] sm:leading-snug">
+            <p class="w-full rounded-2xl bg-secondary/40 px-5 py-4 text-[15px] leading-relaxed backdrop-blur-md sm:col-span-3 sm:col-start-auto sm:w-auto sm:rounded-[0.55vw] sm:px-[0.75vw] sm:py-[0.55vw] sm:text-[1.6vw] sm:leading-snug">
               Konfor, güvenlik ve estetiği bir araya getirerek kentsel dönüşüm projeleriyle şehre değer katmayı hedefliyoruz.
             </p>
           </div>

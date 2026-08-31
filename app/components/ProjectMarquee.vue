@@ -149,14 +149,14 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="pointer-events-none absolute right-4 bottom-[max(1.4rem,env(safe-area-inset-bottom))] z-20 flex flex-col items-center gap-1 text-secondary/50 sm:right-[2.2vw] sm:bottom-[2.4vw] sm:gap-[0.55vw]">
+      <div class="pointer-events-none absolute bottom-[max(1.6rem,env(safe-area-inset-bottom))] left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-secondary/50 sm:left-auto sm:right-[2.2vw] sm:bottom-[2.4vw] sm:translate-x-0 sm:gap-[0.55vw]">
         <!-- Mobil: yukarı kaydır animasyonu -->
         <div class="flex flex-col items-center sm:hidden" aria-hidden="true">
-          <svg class="gallery-swipe-chevrons h-8 w-8" viewBox="0 0 24 24" fill="none">
+          <svg class="gallery-swipe-chevrons h-11 w-11" viewBox="0 0 24 24" fill="none">
             <path class="gallery-chevron gallery-chevron-1" d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
             <path class="gallery-chevron gallery-chevron-2" d="M6 19l6-6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          <span class="mt-0.5 text-[11px] tracking-wide">Kaydır</span>
+          <span class="mt-0.5 text-[14px] tracking-wide">Kaydır</span>
         </div>
         <!-- Masaüstü: mouse tekeri -->
         <div class="hidden flex-col items-center sm:flex">

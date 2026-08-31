@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nav } from '~/data/content'
+import { company, nav } from '~/data/content'
 import gsap from 'gsap'
 
 const { menuOpen, hovering, closeMenu, openContact } = useUi()
@@ -31,21 +31,21 @@ watch(menuOpen, async (open) => {
       :class="menuOpen ? 'pointer-events-auto' : 'pointer-events-none'"
     >
       <div class="relative h-[100lvh] overflow-y-auto bg-[#004860] pt-[max(0.7rem,env(safe-area-inset-top))]">
-        <div class="layout-grid h-auto items-center pt-2 sm:pt-[1.5vw]">
+        <div class="relative px-[var(--margin)] pt-3 sm:layout-grid sm:px-0 sm:pt-[1.5vw]">
           <NuxtLink
             to="/"
-            class="col-span-4 flex h-fit w-fit items-center sm:col-span-6"
+            class="mx-auto flex w-fit items-center sm:col-span-6 sm:mx-0"
             @click="closeMenu()"
           >
             <img
               src="/images/brand/dikey_renkli_flores.svg?v=3"
               alt="Flores"
-              class="block h-16 w-auto sm:h-[4.5vw]"
+              class="block h-28 w-auto sm:h-[4.5vw]"
             >
           </NuxtLink>
           <button
             type="button"
-            class="col-span-2 text-right extraSmallText text-primary/60 transition-colors hover:text-primary sm:hidden"
+            class="absolute top-6 right-[var(--margin)] text-[16px] text-primary/60 transition-colors hover:text-primary sm:hidden"
             @click="closeMenu()"
           >
             Kapat
@@ -55,13 +55,13 @@ watch(menuOpen, async (open) => {
           </div>
         </div>
 
-        <nav class="mt-[10svh] w-full layout-grid space-y-3 sm:mt-[18svh] sm:space-y-[1svh]">
+        <nav class="mt-[6svh] flex w-full flex-col items-center gap-4 sm:mt-[18svh] sm:layout-grid sm:items-stretch sm:gap-0 sm:space-y-[1svh]">
           <NuxtLink
             v-for="item in nav"
             :key="item.to"
             :to="item.to"
             data-link
-            class="col-span-6 mediumText"
+            class="text-center text-[2.15rem] font-medium leading-none sm:col-span-6 sm:text-left sm:mediumText"
             @click="closeMenu()"
             @mouseenter="hovering = true"
             @mouseleave="hovering = false"
@@ -70,16 +70,19 @@ watch(menuOpen, async (open) => {
           </NuxtLink>
         </nav>
 
-        <div class="mt-10 w-full layout-grid space-y-3 smallText text-primary/80 sm:mt-[16svh] sm:space-y-[1svh]">
-          <a href="mailto:info@flores.com.tr" class="col-span-6 sm:col-span-4">info@flores.com.tr</a>
-          <a href="tel:4440917" class="col-span-6 sm:col-span-3">444 0 917</a>
+        <div class="mt-12 flex w-full flex-col items-center gap-3 px-[var(--margin)] text-center text-[18px] leading-snug text-primary/80 sm:mt-[16svh] sm:layout-grid sm:items-start sm:gap-0 sm:space-y-[1svh] sm:px-0 sm:text-left sm:smallText">
+          <a :href="`mailto:${company.email}`" class="sm:col-span-4">{{ company.email }}</a>
+          <a :href="company.phoneHref" class="sm:col-span-3">{{ company.phone }}</a>
+          <p class="max-w-[18rem] text-[16px] leading-snug text-primary/55 sm:col-span-6 sm:max-w-[22vw] sm:text-[1.1vw]">
+            {{ company.address }}
+          </p>
           <button
             type="button"
-            class="col-span-6 mt-4 inline-flex w-fit items-center justify-between gap-3 rounded-full bg-cyan py-3 pl-4 pr-4 extraSmallText text-primary sm:mt-0 sm:gap-[1.6vw] sm:py-[0.55vw] sm:pl-[0.95vw] sm:pr-[0.85vw]"
+            class="mt-3 inline-flex items-center justify-center gap-3 rounded-full bg-cyan px-6 py-3.5 text-[16px] font-medium text-primary sm:col-span-6 sm:mt-0 sm:w-fit sm:gap-[1.6vw] sm:px-[0.95vw] sm:py-[0.55vw] sm:text-[1.1vw] sm:font-normal"
             @click="closeMenu(); openContact()"
           >
             <span>Talep formu</span>
-            <span class="flex h-4 w-4 shrink-0 items-center justify-center sm:h-[1.55vw] sm:w-[1.55vw]" aria-hidden="true">
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center sm:h-[1.55vw] sm:w-[1.55vw]" aria-hidden="true">
               <BurstMark size="xs" />
             </span>
           </button>
